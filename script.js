@@ -11,10 +11,20 @@ fetch('https://restcountries.com/v3.1/all?fields=name,flags,region,population,la
       let region = country['region']
       let population = country['population']
       let languages = Object.values(country['languages']).join(', ')
-      let currency = Object.values(Object.values(country['currencies'])[0])
-      let currencyName = currency[0]
-      let currencySymbol = currency[1]
+      let currencies = Object.values(Object.values(country)[2]).map(currency => {
+        return `${currency.symbol} ${currency.name}`
+      }).join(', ')
       
+      if(population >= 1000000){
+        population = `${(population/1000000).toFixed(2)} млн`
+      }
+      else if(population >= 1000){
+        population = `${(population/1000).toFixed(2)} тыс`
+      }
+      else{
+        population = `${population} чел`
+      }
+
       list.insertAdjacentHTML('beforeend', `
       <div class="col">
         <div class="card">
@@ -22,9 +32,9 @@ fetch('https://restcountries.com/v3.1/all?fields=name,flags,region,population,la
           <div class="card-body">
             <h5 class="card-title">${name}</h5>
             <p class="card-text">${region}</p>
-            <p class="card-text">👨‍👩‍👧‍👦 ${(population/1000000).toFixed(3)} млн</p>
+            <p class="card-text">👨‍👩‍👧‍👦 ${population}</p>
             <p class="card-text">🗣️ ${languages}</p>
-            <p class="card-text">💰 ${currencySymbol} ${currencyName}</p>
+            <p class="card-text">💰 ${currencies}</p>
           </div>
         </div>
       </div>`)
